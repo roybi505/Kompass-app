@@ -1,54 +1,75 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kompass | הקיץ שלי</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kompass | My Summer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(12px); }
+        .chat-height { height: calc(100vh - 140px); }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col pb-16 selection:bg-indigo-500 selection:text-white">
+<body class="bg-gradient-to-tr from-slate-950 via-indigo-950 to-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white overflow-hidden">
 
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-4 py-3 flex justify-between items-center shadow-sm">
-        <h1 class="text-xl font-black text-indigo-600 tracking-wide flex items-center gap-2">🧭 Kompass</h1>
-        <div class="flex gap-1 bg-slate-100 p-1 rounded-xl text-sm font-medium">
-            <button id="tab-list-btn" onclick="switchTab('list')" class="px-4 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition-all">הרשימה שלי</button>
-            <button id="tab-ai-btn" onclick="switchTab('ai')" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">העוזר האישי (AI)</button>
+    <div class="absolute top-0 right-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-10 left-1/4 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <header class="glass border-b border-white/5 sticky top-0 z-50 px-4 py-3.5 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl animate-pulse">🧭</span>
+            <h1 class="text-xl font-extrabold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent tracking-tight">Kompass</h1>
+        </div>
+        <div class="flex gap-1 bg-slate-950/60 p-1 rounded-xl border border-white/5 shadow-inner">
+            <button id="tab-list-btn" onclick="switchTab('list')" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold shadow-md transition-all duration-300 text-xs sm:text-sm">My List</button>
+            <button id="tab-ai-btn" onclick="switchTab('ai')" class="px-4 py-1.5 rounded-lg text-slate-400 font-medium hover:text-slate-200 transition-all duration-300 text-xs sm:text-sm">AI Assistant</button>
         </div>
     </header>
 
-    <main id="tab-list" class="flex-1 p-4 max-w-md mx-auto w-full space-y-6">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-            <h3 class="font-bold text-slate-700 text-sm">➕ הוספת יעד או משימה</h3>
-            <div class="flex gap-2">
-                <input type="text" id="item-input" placeholder="למשל: מוזיאון ואן גוך..." class="flex-1 px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 bg-slate-50">
-                <select id="category-input" class="px-2 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 bg-slate-50">
-                    <option value="🎯 אטרקציות">🎯 אטרקציות</option>
-                    <option value="🍔 אוכל ומסעדות">🍔 אוכל</option>
-                    <option value="🛍️ קניות">🛍️ קניות</option>
-                    <option value="✈️ לוגיסטיקה">✈️ לוגיסטיקה</option>
-                </select>
-                <button onclick="addItem()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 active:scale-95 transition-all">הוסף</button>
+    <main id="tab-list" class="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full space-y-5 custom-scroll pb-24">
+        
+        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl shadow-xl space-y-3">
+            <div class="flex items-center gap-2 text-indigo-300 font-bold text-xs uppercase tracking-wider">
+                <span>✨</span> New Destination / Task
+            </div>
+            <div class="flex flex-col gap-2">
+                <input type="text" id="item-input" placeholder="e.g., Cold beer in the main square..." class="w-full px-4 py-3 bg-slate-950/50 border border-white/10 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-500 text-white shadow-inner">
+                <div class="flex gap-2">
+                    <select id="category-input" class="flex-1 px-3 py-2.5 bg-slate-900 border border-white/10 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-slate-300">
+                        <option value="🎯 Attractions">🎯 Attractions</option>
+                        <option value="🍔 Food & Dining">🍔 Food & Dining</option>
+                        <option value="🛍️ Shopping">🛍️ Shopping</option>
+                        <option value="✈️ Logistics">✈️ Logistics & Travel</option>
+                    </select>
+                    <button onclick="addItem()" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-5 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">Add</button>
+                </div>
             </div>
         </div>
 
         <div id="list-container" class="space-y-4"></div>
     </main>
 
-    <main id="tab-ai" class="hidden flex-1 flex-col max-w-md mx-auto w-full p-4 h-[calc(100vh-8rem)]">
-        <div id="chat-container" class="flex-1 overflow-y-auto space-y-4 mb-4 p-2 bg-slate-100 rounded-2xl border border-slate-200 inner-shadow flex flex-col">
-            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-2xl text-sm max-w-[85%] self-start text-indigo-950">
-                היי! אני העוזר האישי שלך לקיץ. אני מכיר את כל הרשימות שלך ויודע מה כבר עשית ומה נשאר. תשאל אותי הכל (המלצות, דרכי הגעה, או מה פתוח)!
+    <main id="tab-ai" class="hidden flex-1 flex-col max-w-md mx-auto w-full p-4 chat-height overflow-hidden">
+        <div id="chat-container" class="flex-1 overflow-y-auto space-y-4 mb-3 p-3 bg-slate-950/40 border border-white/5 rounded-2xl flex flex-col custom-scroll shadow-inner">
+            <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl rounded-tl-none text-sm max-w-[85%] self-start text-slate-200 shadow-md leading-relaxed">
+                👋 **Hey! I'm Kompass, your personal travel co-pilot.** <div class="mt-1.5 text-xs text-indigo-300">I'm synced with your summer list and know what you've done and what's left. Ask me for hidden gems, directions, or trip planning!</div>
             </div>
         </div>
-        <div class="flex gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
-            <input type="text" id="chat-input" placeholder="שאל את ה-AI על היעדים שלך..." class="flex-1 px-3 py-2 text-sm focus:outline-none bg-slate-50 rounded-xl" onkeypress="if(event.key === 'Enter') sendChatMessage()">
-            <button onclick="sendChatMessage()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all">שלח</button>
+        
+        <div class="flex gap-2 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-xl">
+            <input type="text" id="chat-input" placeholder="Ask AI about your destinations..." class="flex-1 px-4 py-3 text-sm focus:outline-none bg-slate-950/60 rounded-xl text-white placeholder:text-slate-500 border border-white/5 focus:border-indigo-500/50 transition-all shadow-inner" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" class="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white px-5 py-3 rounded-xl text-sm font-extrabold hover:from-indigo-500 hover:to-indigo-400 transition-all shadow-md">Send</button>
         </div>
     </main>
 
     <script>
-        // Initialize Telegram Web App
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
@@ -62,16 +83,25 @@
         }
 
         function switchTab(tab) {
+            const listBtn = document.getElementById('tab-list-btn');
+            const aiBtn = document.getElementById('tab-ai-btn');
+            const listView = document.getElementById('tab-list');
+            const aiView = document.getElementById('tab-ai');
+
             if (tab === 'list') {
-                document.getElementById('tab-list').classList.remove('hidden');
-                document.getElementById('tab-ai').classList.add('hidden');
-                document.getElementById('tab-list-btn').className = "px-4 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
-                document.getElementById('tab-ai-btn').className = "px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+                listView.classList.remove('hidden');
+                aiView.classList.add('hidden');
+                listBtn.className = "px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold shadow-md transition-all duration-300 text-xs sm:text-sm";
+                aiBtn.className = "px-4 py-1.5 rounded-lg text-slate-400 font-medium hover:text-slate-200 transition-all duration-300 text-xs sm:text-sm";
             } else {
-                document.getElementById('tab-list').classList.add('hidden');
-                document.getElementById('tab-ai').classList.remove('hidden');
-                document.getElementById('tab-list-btn').className = "px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all";
-                document.getElementById('tab-ai-btn').className = "px-4 py-1.5 rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                listView.classList.add('hidden');
+                aiView.classList.remove('hidden');
+                aiBtn.className = "px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold shadow-md transition-all duration-300 text-xs sm:text-sm";
+                listBtn.className = "px-4 py-1.5 rounded-lg text-slate-400 font-medium hover:text-slate-200 transition-all duration-300 text-xs sm:text-sm";
+                setTimeout(() => {
+                    const cc = document.getElementById('chat-container');
+                    cc.scrollTop = cc.scrollHeight;
+                }, 50);
             }
         }
 
@@ -91,12 +121,13 @@
             saveItems();
         }
 
-        function toggleItem(id) {
+        // Fix logic for toggle and delete
+        window.toggleItem = function(id) {
             items = items.map(item => item.id === id ? { ...item, completed: !item.completed } : item);
             saveItems();
         }
 
-        function deleteItem(id) {
+        window.deleteItem = function(id) {
             items = items.filter(item => item.id !== id);
             saveItems();
         }
@@ -106,7 +137,12 @@
             container.innerHTML = '';
 
             if (items.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm font-medium">הרשימה שלך ריקה. תוסיף משהו מגניב לקיץ! ✈️</div>`;
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white/5 border border-dashed border-white/10 rounded-2xl p-6">
+                        <span class="text-3xl block mb-2">🌍</span>
+                        <div class="text-slate-300 font-bold text-sm">Your list is looking pristine...</div>
+                        <div class="text-slate-500 text-xs mt-1">Add some epic spots you must hit this summer!</div>
+                    </div>`;
                 return;
             }
 
@@ -115,19 +151,19 @@
             categories.forEach(cat => {
                 const catItems = items.filter(i => i.category === cat);
                 let catHtml = `
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div class="bg-slate-50 px-4 py-2 border-b border-slate-100 font-bold text-xs text-slate-500 uppercase tracking-wider">${cat}</div>
-                        <ul class="divide-y divide-slate-100">
+                    <div class="bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden">
+                        <div class="bg-white/5 px-4 py-2.5 border-b border-white/5 font-extrabold text-xs text-indigo-300 tracking-wide">${cat}</div>
+                        <ul class="divide-y divide-white/5">
                 `;
 
                 catItems.forEach(item => {
                     catHtml += `
-                        <li class="flex items-center justify-between px-4 py-3 hover:bg-slate-50/50 transition-all">
-                            <label class="flex items-center gap-3 flex-1 cursor-pointer select-none">
-                                <input type="checkbox" onchange="toggleItem(${item.id})" ${item.completed ? 'checked' : ''} class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
-                                <span class="text-sm ${item.completed ? 'line-through text-slate-400 font-normal' : 'text-slate-700 font-medium'}">${item.title}</span>
+                        <li class="flex items-center justify-between px-4 py-3.5 hover:bg-white/5 transition-all duration-200">
+                            <label class="flex items-center gap-3.5 flex-1 cursor-pointer select-none">
+                                <input type="checkbox" onchange="toggleItem(${item.id})" ${item.completed ? 'checked' : ''} class="w-4.5 h-4.5 accent-indigo-500 border-white/20 rounded bg-slate-900 focus:ring-0 cursor-pointer">
+                                <span class="text-sm ${item.completed ? 'line-through text-slate-500 font-light' : 'text-slate-200 font-medium'}">${item.title}</span>
                             </label>
-                            <button onclick="deleteItem(${item.id})" class="text-slate-300 hover:text-red-500 p-1 text-sm transition-all">🗑️</button>
+                            <button onclick="deleteItem(${item.id})" class="text-slate-500 hover:text-rose-400 p-1 text-sm transition-all duration-150">🗑️</button>
                         </li>
                     `;
                 });
@@ -145,19 +181,17 @@
             input.value = '';
             const chatContainer = document.getElementById('chat-container');
 
-            // Append User Message
             chatContainer.innerHTML += `
-                <div class="bg-indigo-600 text-white p-3 rounded-2xl text-sm max-w-[85%] self-end shadow-sm">
+                <div class="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-3.5 rounded-2xl rounded-tr-none text-sm max-w-[85%] self-end shadow-md leading-relaxed">
                     ${message}
                 </div>
             `;
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // Append Loading
             const loadingId = 'loading-' + Date.now();
             chatContainer.innerHTML += `
-                <div id="${loadingId}" class="bg-white border border-slate-200 text-slate-500 p-3 rounded-2xl text-sm max-w-[85%] self-start italic">
-                    חושב... 🧭
+                <div id="${loadingId}" class="bg-white/5 border border-white/10 text-slate-400 p-3 rounded-2xl rounded-tl-none text-sm max-w-[85%] self-start italic flex items-center gap-2">
+                    <span class="animate-spin text-xs"> Compass </span> Mapping it out...
                 </div>
             `;
             chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -171,19 +205,22 @@
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
+                let formattedReply = data.reply || 'Something went wrong, please try again.';
+                formattedReply = formattedReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                formattedReply = formattedReply.replace(/^\s*-\s*(.*)/gm, '• $1');
+
                 chatContainer.innerHTML += `
-                    <div class="bg-white border border-slate-200 text-slate-800 p-3 rounded-2xl text-sm max-w-[85%] self-start shadow-sm whitespace-pre-wrap">
-                        ${data.reply || 'משהו השתבש, נסה שוב.'}
+                    <div class="bg-white/5 border border-white/10 text-slate-200 p-3.5 rounded-2xl rounded-tl-none text-sm max-w-[85%] self-start shadow-md whitespace-pre-wrap leading-relaxed">
+                        ${formattedReply}
                     </div>
                 `;
             } catch (err) {
                 document.getElementById(loadingId).remove();
-                chatContainer.innerHTML += `<div class="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl text-sm max-w-[85%] self-start">שגיאת חיבור לשרת.</div>`;
+                chatContainer.innerHTML += `<div class="bg-rose-500/10 border border-rose-500/20 text-rose-300 p-3 rounded-2xl text-sm max-w-[85%] self-start">Server error. Check your API configuration.</div>`;
             }
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Initial render
         renderList();
     </script>
 </body>
