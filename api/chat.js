@@ -7,24 +7,24 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'מפתח ה-API של Gemini חסר בשרת.' });
+    return res.status(500).json({ error: 'Gemini API key is missing on the server.' });
   }
 
   // Format the user's list beautifully for the AI context
   const formattedList = listContext && listContext.length > 0 
     ? listContext.map(item => `- [${item.completed ? 'V' : ' '}] ${item.title} (${item.category})`).join('\n')
-    : 'הרשימה כרגע ריקה.';
+    : 'The list is currently empty.';
 
-  const prompt = `אתה עוזר טיולים אישי אינטליגנטי, שנון וממוקד בשם Kompass.
-המשתמש מתכנן את הקיץ שלו ומנהל רשימת יעדים ומשימות באפליקציה. 
+  const prompt = `You are Kompass, an intelligent, witty, and highly practical personal travel assistant. 
+The user is planning their summer trip and tracking locations/tasks inside this mini app.
 
-להלן המצב הנוכחי והמעודכן בזמן אמת של הרשימה שלו (מסומן ב-[V] מה שבוצע, וב-[ ] מה שעדיין נשאר לעשות):
+Here is the real-time up-to-date status of their summer bucket list ([V] means completed, [ ] means still pending):
 ${formattedList}
 
-המשתמש שאל: "${message}"
+The user asked: "${message}"
 
-ענה לו בעברית רהוטה, קלילה, בגובה העיניים ועם מעט הומור. 
-אם הוא מבקש המלצות, דרכי הגעה או לוגיסטיקה, עזור לו בצורה ממוקדת (השתמש בבולטים או בכותרות קטנות כדי שהתשובה תהיה קריאה וסרוקה בשלוף מהטלפון). תמיד תתחשב במה שהוא כבר עשה או במה שנשאר לו לעשות מהרשימה שלו במידה וזה רלוונטי לחוויה.`;
+Respond in fluent, clear, and modern English. Keep a lighthearted, smart-casual tone. 
+If they ask for recommendations, transport logistics, or routes, use clean bullet points or bold headers so it is easily scannable on a smartphone screen while they are out exploring. Always prioritize or factor in what they have already visited or what's left on their active list if it adds contextual value.`;
 
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
@@ -41,7 +41,7 @@ ${formattedList}
       const reply = data.candidates[0].content.parts[0].text;
       return res.status(200).json({ reply });
     } else {
-      return res.status(505).json({ error: 'תגובה לא תקינה מהמודל.' });
+      return res.status(502).json({ error: 'Invalid response from the AI model.' });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
